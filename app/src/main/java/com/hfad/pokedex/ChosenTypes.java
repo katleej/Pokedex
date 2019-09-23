@@ -23,6 +23,6 @@ public class ChosenTypes {
         return str;
     }
 
-    public static String[] types = {"psychic", "dark", "ghost", "steel", "rock", "grass", "ice", "bug",
-        "flying", "electric", "dragon", "fairy","poison", "normal", "ground", "water", "fire", "fighting"};
+    public static String[] types = {"Psychic", "Dark", "Ghost", "Steel", "Rock", "Grass", "Ice", "Bug",
+        "Flying", "Electric", "Dragon", "Fairy","Poison", "Normal", "Ground", "Water", "Fire", "Fighting"};
 }

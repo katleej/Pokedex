@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PokemonListActivity extends AppCompatActivity {
@@ -25,8 +28,9 @@ public class PokemonListActivity extends AppCompatActivity {
         intent = getIntent();
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new MyAdapter(this, getList());
         recyclerView.setAdapter(adapter);
+        databaseHelper = new PokemonDatabaseHelper(this);
+        adapter = new MyAdapter(this, getList());
     }
 
     public ArrayList<Model> getList() {
@@ -36,12 +40,13 @@ public class PokemonListActivity extends AppCompatActivity {
         String[] chosen_list = ChosenTypes.getList();
 
         databaseHelper = new PokemonDatabaseHelper(this);
-        db = databaseHelper.getReadableDatabase();
-        Cursor cursor = db.query("pokemon", new String[]{"name", "type1", "type2"},
-                "type1 = ? OR type2 =?", chosen_list, null, null, null);
+        Cursor cursor = databaseHelper.db.query("pokemon", new String[]{"name", "type1"},
+                "type1 = ?",
+                 new String[] {"Grass"}, null, null, null);
+
         ArrayList<Model> models = new ArrayList<>();
         try {
-            while (cursor.moveToNext()) {
+            while (cursor.moveToFirst()) {
                 Model pokemon = new Model();
                 pokemon.setName(cursor.getString(0));
                 pokemon.setType(cursor.getString(1) + ", " + cursor.getString(2));
@@ -51,11 +56,8 @@ public class PokemonListActivity extends AppCompatActivity {
             cursor.close();
         }
 
-//        ArrayList<Model> models = new ArrayList<>();
-//        Model pokemon = new Model();
-//        pokemon.setName("Poke");
-//        pokemon.setType("mon");
-//        models.add(pokemon);
         return models;
     }
+
+
 }

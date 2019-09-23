@@ -101,6 +101,7 @@ public class PokemonDatabaseHelper extends SQLiteOpenHelper {
                 if (value.getJSONArray("Type").length() > 1) {
                     type2 = value.getJSONArray("Type").get(1).toString();
                 }
+                
 
 
                 ContentValues pokemonValues = new ContentValues();

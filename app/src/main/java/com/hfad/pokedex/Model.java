@@ -5,11 +5,11 @@ public class Model {
     private int imageId;
     private String name, type;
 
-    public int getImageId() {
+    public int getImage() {
         return imageId;
     }
 
-    public void setImageId(int imageId) {
+    public void setImage(String name) {
         this.imageId = imageId;
     }
 

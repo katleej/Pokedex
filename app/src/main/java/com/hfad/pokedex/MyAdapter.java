@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.hfad.pokedex.Model;
 import com.hfad.pokedex.R;
 
@@ -32,7 +33,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
     public void onBindViewHolder(@NonNull MyHolder myHolder, int i) {
         myHolder.name.setText(models.get(i).getName());
         myHolder.type.setText(models.get(i).getType());
-        myHolder.image.setImageResource(models.get(i).getImageId());
+        Glide.with(this).load("http://img.pokemondb.net/artwork/pokemonname.jpg").into(myHolder.image);
     }
 
     @Override

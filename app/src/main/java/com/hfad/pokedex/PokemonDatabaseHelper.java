@@ -33,8 +33,6 @@ public class PokemonDatabaseHelper extends SQLiteOpenHelper {
 
     public PokemonDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-//        mResources = context.getResources();
-//        db = this.getWritableDatabase();
         try {
            update();
         } catch (IOException e) {

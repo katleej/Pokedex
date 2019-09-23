@@ -31,9 +31,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyHolder myHolder, int i) {
-        myHolder.name.setText(models.get(i).getName());
+        String name = models.get(i).getName();
+        String lower_name = name.toLowerCase();
+        myHolder.name.setText(name);
         myHolder.type.setText(models.get(i).getType());
-        Glide.with(this).load("http://img.pokemondb.net/artwork/pokemonname.jpg").into(myHolder.image);
+        Glide.with(c).load("http://img.pokemondb.net/artwork/" + lower_name + ".jpg");
     }
 
     @Override

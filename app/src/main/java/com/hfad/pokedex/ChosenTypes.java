@@ -19,6 +19,10 @@ public class ChosenTypes {
         return chosen;
     }
 
+    public static void empty() {
+        chosen.clear();
+    }
+
     public static String[] types = {"Psychic", "Dark", "Ghost", "Steel", "Rock", "Grass", "Ice", "Bug",
         "Flying", "Electric", "Dragon", "Fairy","Poison", "Normal", "Ground", "Water", "Fire", "Fighting"};
 }

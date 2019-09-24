@@ -21,13 +21,13 @@ import java.util.Iterator;
 public class PokemonListActivity extends AppCompatActivity {
 
     private Resources mResources;
+    public static String json;
     int min_attack, min_defense, min_health = 0;
     RecyclerView recyclerView;
     MyAdapter adapter;
     Intent intent;
-    SQLiteDatabase db;
     ArrayList<Model> models = new ArrayList<>();
-    PokemonDatabaseHelper databaseHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class PokemonListActivity extends AppCompatActivity {
 
     public ArrayList<Model> getList() {
         getNumbers();
-        ArrayList<String> chosen_list = ChosenTypes.chosen;
+        ArrayList<String> chosen_list = intent.getStringArrayListExtra("chosen");
 
         String name, type1, type2, defense, health, attack = "";
 
@@ -84,7 +84,7 @@ public class PokemonListActivity extends AppCompatActivity {
                             pokemon.setDefense(defense);
                             pokemon.setHealth(health);
                             models.add(pokemon);
-                        } else {
+                        } else if ((chosen_list.isEmpty())){
                             Model pokemon = new Model();
                             pokemon.setName(name);
                             pokemon.setType1(type1);
@@ -111,11 +111,6 @@ public class PokemonListActivity extends AppCompatActivity {
     }
 
 
-    public void goToProfile() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
-
     private String readJsonDataFromFile() throws IOException {
         InputStream inputStream = null;
         String data = "";
@@ -131,9 +126,9 @@ public class PokemonListActivity extends AppCompatActivity {
                 inputStream.close();
             }
         }
+        json = data;
         return data;
     }
-
 
     private void getNumbers() {
         try {

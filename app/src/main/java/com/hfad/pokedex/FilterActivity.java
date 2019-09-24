@@ -11,8 +11,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import static com.hfad.pokedex.ChosenTypes.chosen;
+
 public class FilterActivity extends AppCompatActivity{
     Intent received;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,12 @@ public class FilterActivity extends AppCompatActivity{
         intent.putExtra("min attack pts", attack_pts.getText().toString());
         intent.putExtra("min defense pts", defense_pts.getText().toString());
         intent.putExtra("min health pts", health_pts.getText().toString());
+        ArrayList<String> copy = new ArrayList<>();
+        for (int i = 0; i < chosen.size(); i++) {
+            copy.add(chosen.get(i));
+        }
+        intent.putStringArrayListExtra("chosen", copy);
+        ChosenTypes.empty();
         this.startActivity(intent);
     }
 

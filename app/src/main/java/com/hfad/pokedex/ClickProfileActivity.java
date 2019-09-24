@@ -1,9 +1,11 @@
 package com.hfad.pokedex;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.JsonReader;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,7 +21,7 @@ public class ClickProfileActivity extends AppCompatActivity {
     TextView name, type, attack, defense, health, spatk, spdef, sphp;
     TextView species, flavor, total;
     ImageView image;
-    String _spatk, _spdef, _species, _flavor, _total;
+    String _spatk, _spdef, _species, _flavor, _total, lower_name, lower_name_mega;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,9 +42,12 @@ public class ClickProfileActivity extends AppCompatActivity {
         Intent intent = getIntent();
         name.setText(intent.getStringExtra("name"));
         String namey = intent.getStringExtra("name");
-        String lower_name = namey.toLowerCase();
+        lower_name = namey.toLowerCase();
         if (lower_name.contains("(")) {
             lower_name = lower_name.substring(0, lower_name.indexOf("(") - 1);
+            lower_name_mega = lower_name + "-mega";
+        } else {
+            lower_name_mega = lower_name;
         }
 
         try {
@@ -70,6 +75,18 @@ public class ClickProfileActivity extends AppCompatActivity {
         flavor.setText("Flavor: " + _flavor);
         total.setText("Total: " + _total);
 
-        Glide.with(image.getContext()).load("https://img.pokemondb.net/artwork/"+ lower_name + ".jpg").into(image);
+        Glide.with(image.getContext()).load("https://img.pokemondb.net/artwork/"+ lower_name_mega + ".jpg").into(image);
+        if (intent.getStringExtra("name").equals("Aegislash ( Blade  Forme )")) {
+            Glide.with(image.getContext()).load("https://img.pokemondb.net/artwork/aegislash-blade.jpg").into(image);
+        } else if (intent.getStringExtra("name").equals("Aegislash ( Shield  Forme )")) {
+            Glide.with(image.getContext()).load("https://img.pokemondb.net/artwork/aegislash-shield.jpg").into(image);
+        }
+    }
+
+    public void onClickLearn(View view) {
+        String url = "https://pokemondb.net/pokedex/" + lower_name;
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
     }
 }

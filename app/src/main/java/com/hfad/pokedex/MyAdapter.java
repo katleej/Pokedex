@@ -43,6 +43,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
         lower_name = name.toLowerCase();
         if (lower_name.contains("(")) {
             lower_name = lower_name.substring(0, lower_name.indexOf("(") - 1);
+            lower_name = lower_name + "-mega";
         }
         myHolder.name.setText(name);
         myHolder.type.setText("type: " + models.get(i).getType1() + " " + models.get(i).getType2());
@@ -50,6 +51,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
         myHolder.defense.setText("Dfn: " + models.get(i).getDefense());
         myHolder.health.setText("HP: " + models.get(i).getHealth());
         Glide.with(myHolder.image.getContext()).load("https://img.pokemondb.net/artwork/"+ lower_name + ".jpg").into(myHolder.image);
+        if (name.equals("Aegislash ( Blade  Forme )")) {
+            Glide.with(myHolder.image.getContext()).load("https://img.pokemondb.net/artwork/aegislash-blade.jpg").into(myHolder.image);
+        } else if (name.equals("Aegislash ( Shield  Forme )")) {
+            Glide.with(myHolder.image.getContext()).load("https://img.pokemondb.net/artwork/aegislash-shield.jpg").into(myHolder.image);
+        }
 
         myHolder.setItemClickListener(new ItemClickListener() {
             @Override

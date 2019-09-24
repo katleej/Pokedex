@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +29,8 @@ public class PokemonListActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     MyAdapter adapter;
     Intent intent;
+    private String user_input = "";
+    private TextWatcher text = null;
     ArrayList<Model> models = new ArrayList<>();
 
 
@@ -36,11 +41,36 @@ public class PokemonListActivity extends AppCompatActivity {
         intent = getIntent();
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new MyAdapter(this, getList());
+
+        final EditText search = (EditText) findViewById(R.id.search);
+        getList();
+        text = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                user_input = search.getText().toString();
+                for (int i = 0; i < models.size(); i++) {
+                    if (!models.get(i).getName().contains(s)) {
+                        models.remove(i);
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        };
+        search.addTextChangedListener(text);
+        adapter = new MyAdapter(this, models);
         recyclerView.setAdapter(adapter);
     }
 
-    public ArrayList<Model> getList() {
+
+    public void getList() {
         getNumbers();
         ArrayList<String> chosen_list = intent.getStringArrayListExtra("chosen");
 
@@ -97,8 +127,6 @@ public class PokemonListActivity extends AppCompatActivity {
                     } else {
                         continue;
                     }
-
-
                 }
 
             } catch (JSONException e) {
@@ -107,7 +135,6 @@ public class PokemonListActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        return models;
     }
 
 

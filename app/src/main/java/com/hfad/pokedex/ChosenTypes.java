@@ -15,12 +15,8 @@ public class ChosenTypes {
         chosen.remove(string);
     }
 
-    public static String[] getList() {
-        String str[] = new String[chosen.size()];
-        for (int j = 0; j < chosen.size(); j++) {
-            str[j] = chosen.get(j);
-        }
-        return str;
+    public static ArrayList<String> getList() {
+        return chosen;
     }
 
     public static String[] types = {"Psychic", "Dark", "Ghost", "Steel", "Rock", "Grass", "Ice", "Bug",

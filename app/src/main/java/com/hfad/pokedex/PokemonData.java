@@ -9,7 +9,6 @@ public class PokemonData {
     public static final class Pokemon implements BaseColumns {
         public static final String DB_NAME = "pokemon";
         public static final String COLUMN_NAME ="name";
-        public static final String COLUMN_NUM = "num";
         public static final String COLUMN_DEFENSE = "defense";
         public static final String COLUMN_ATTACK = "attack";
         public static final String COLUMN_FLAVOR = "flavor";

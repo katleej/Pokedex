@@ -1,7 +1,7 @@
 package com.hfad.pokedex;
 
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,16 +9,24 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class PokemonListActivity extends AppCompatActivity {
 
+    private Resources mResources;
+    int min_attack, min_defense, min_health = 0;
     RecyclerView recyclerView;
     MyAdapter adapter;
     Intent intent;
     SQLiteDatabase db;
+    ArrayList<Model> models = new ArrayList<>();
     PokemonDatabaseHelper databaseHelper;
 
     @Override
@@ -28,36 +36,122 @@ public class PokemonListActivity extends AppCompatActivity {
         intent = getIntent();
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
-        databaseHelper = new PokemonDatabaseHelper(this);
         adapter = new MyAdapter(this, getList());
+        recyclerView.setAdapter(adapter);
     }
 
     public ArrayList<Model> getList() {
-        String min_attack = intent.getStringExtra("min attack pts");
-        String min_defense = intent.getStringExtra("min defense pts");
-        String min_health = intent.getStringExtra("min health pts");
-        String[] chosen_list = ChosenTypes.getList();
+        getNumbers();
+        ArrayList<String> chosen_list = ChosenTypes.chosen;
 
-        databaseHelper = new PokemonDatabaseHelper(this);
-        Cursor cursor = databaseHelper.db.query("pokemon", new String[]{"name", "type1"},
-                "type1 = ?",
-                 new String[] {"Grass"}, null, null, null);
+        String name, type1, type2, defense, health, attack = "";
 
-        ArrayList<Model> models = new ArrayList<>();
-        try {
-            while (cursor.moveToFirst()) {
-                Model pokemon = new Model();
-                pokemon.setName(cursor.getString(0));
-                pokemon.setType(cursor.getString(1) + ", " + cursor.getString(2));
-                models.add(pokemon);
+        if (chosen_list.size() < 3) {
+            try {
+                String jsonDataString = readJsonDataFromFile();
+                JSONObject pokemonObject = new JSONObject(jsonDataString);
+                Iterator iterator = pokemonObject.keys();
+                while (iterator.hasNext()) {
+                    String key = (String) iterator.next();
+                    JSONObject value = pokemonObject.getJSONObject(key);
+                    name = key;
+                    type1 = value.getJSONArray("Type").get(0).toString();
+                    type2 = " ";
+                    if (value.getJSONArray("Type").length() > 1) {
+                        type2 = value.getJSONArray("Type").get(1).toString();
+                    }
+                    attack = value.getString("Attack");
+                    defense = value.getString("Defense");
+                    health = value.getString("HP");
+
+                    if (Integer.parseInt(attack) >= min_attack && Integer.parseInt(defense) >= min_defense
+                            && Integer.parseInt(health) >= min_health) {
+                        if ((chosen_list.size() == 2 && chosen_list.contains(type1) && chosen_list.contains(type2))) {
+                            Model pokemon = new Model();
+                            pokemon.setName(name);
+                            pokemon.setType1(type1);
+                            pokemon.setType2(type2);
+                            pokemon.setAttack(attack);
+                            pokemon.setDefense(defense);
+                            pokemon.setHealth(health);
+                            models.add(pokemon);
+                        } else if ((chosen_list.size() == 1 && (chosen_list.contains(type1) || chosen_list.contains(type2)))) {
+                            Model pokemon = new Model();
+                            pokemon.setName(name);
+                            pokemon.setType1(type1);
+                            pokemon.setType2(type2);
+                            pokemon.setAttack(attack);
+                            pokemon.setDefense(defense);
+                            pokemon.setHealth(health);
+                            models.add(pokemon);
+                        } else {
+                            Model pokemon = new Model();
+                            pokemon.setName(name);
+                            pokemon.setType1(type1);
+                            pokemon.setType2(type2);
+                            pokemon.setAttack(attack);
+                            pokemon.setDefense(defense);
+                            pokemon.setHealth(health);
+                            models.add(pokemon);
+                        }
+                    } else {
+                        continue;
+                    }
+
+
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } finally {
-            cursor.close();
         }
-
         return models;
     }
 
 
+    public void goToProfile() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    private String readJsonDataFromFile() throws IOException {
+        InputStream inputStream = null;
+        String data = "";
+
+        try {
+            inputStream = getResources().openRawResource(R.raw.pokedata);
+            BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(inputStream, "UTF-8"));
+            data = bufferedReader.readLine();
+
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+        return data;
+    }
+
+
+    private void getNumbers() {
+        try {
+            min_attack = Integer.parseInt(intent.getStringExtra("min attack pts"));
+        } catch (NumberFormatException e) {
+            min_attack = 0;
+        }
+
+        try {
+            min_defense = Integer.parseInt(intent.getStringExtra("min defense pts"));
+        } catch (NumberFormatException e) {
+            min_defense = 0;
+        }
+
+        try {
+            min_health = Integer.parseInt(intent.getStringExtra("min defense pts"));
+        } catch (NumberFormatException e) {
+            min_health = 0;
+        }
+    }
 }
